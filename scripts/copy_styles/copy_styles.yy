@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"copy_styles",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"copy_styles",
+  "parent":{
+    "name":"util",
+    "path":"folders/JUI-System/util.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}
