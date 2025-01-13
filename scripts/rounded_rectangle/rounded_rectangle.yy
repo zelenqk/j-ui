@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"rounded_rectangle",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"rounded_rectangle",
+  "parent":{
+    "name":"util",
+    "path":"folders/JUI-System/util.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

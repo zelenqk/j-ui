@@ -1,1 +1,0 @@
-draw_container(example, x, y);

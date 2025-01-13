@@ -16,3 +16,30 @@ function copy_styles(mainStyle, array){
 	
 	return array;
 }
+
+function copy_styles_array(mainStyle, number){
+	var array = array_create(number, {});
+	
+	for(var i = 0; i < array_length(array); i++){
+		array[i] = struct_copy(mainStyle);
+	}
+	
+	return array;
+}
+
+
+
+function struct_copy(struct){
+    var structNames = variable_struct_get_names(struct);
+    
+    var newStruct = {};
+    for (var i = 0; i < array_length(structNames); i++;){
+		var name = structNames[i];
+		
+		if (is_method(struct[$ name])) newStruct[$ name] = method(newStruct, struct[$ name]);
+		else newStruct[$ name] = struct[$ name]
+	}
+    
+    return newStruct;
+}
+
