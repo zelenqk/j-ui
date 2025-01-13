@@ -37,6 +37,14 @@ baseContainer = {
 	"alignItems": fa_left,
 	"twidth": 0,
 	"theight": 0,
+	"bounds": {
+		"x1": -infinity,
+		"y1": -infinity,
+		"x2": infinity,
+		"y2": infinity,
+	},
+	"tx": 0,
+	"ty": 0,
 	"paddingLeft": 0,
 	"paddingRight": 0,
 	"paddingTop": 0,
@@ -115,7 +123,16 @@ function draw_container(container, cx, cy){
 	
 	var upperSurface = surface_get_target();
 	var overflowHidden = upperSurface != -1;
-	var wrapped = (container.parent.parent.overflow == hidden);
+	var wrapped = overflowHidden;
+	
+	if (wrapped == false){
+		container.bounds = {
+			"x1": container.tx, 	
+			"y1": container.ty, 
+			"x2": container.tx + container.width, 	
+			"y2": container.ty + container.height, 
+		}
+	}
 	
 	cx += container.marginLeft + container.offsetX;
 	cy += container.marginTop + container.offsetY;
@@ -142,11 +159,11 @@ function draw_container(container, cx, cy){
 		y2 = min(container.ty + container.height, container.parent.ty + container.parent.height + container.parent.marginBottom);
 	}else if (overflowHidden and wrapped){
 		//apply parent's parent bounds
-		x1 = max(x1, container.parent.parent.tx - container.parent.parent.marginLeft);
-		y1 = max(y1, container.parent.parent.ty - container.parent.parent.marginTop);
+		x1 = max(x1, container.parent.bounds.x1);
+		y1 = max(y1, container.parent.bounds.y1);
 		
-		x2 = min(container.tx + container.width, container.parent.parent.tx + container.parent.parent.width + container.parent.parent.marginRight);
-		y2 = min(container.ty + container.height, container.parent.parent.ty + container.parent.parent.height + container.parent.parent.marginBottom);
+		x2 = min(container.tx + container.width, container.parent.bounds.x2);
+		y2 = min(container.ty + container.height, container.parent.bounds.y2);
 	
 		//now apply parent's bounds
 		x1 = max(x1, container.parent.tx - container.parent.marginLeft);
@@ -228,6 +245,8 @@ function draw_container(container, cx, cy){
 		var subContainer = container.content[i];
 		subContainer.parent = container;
 		
+		if (container.overflow == hidden and wrapped = false) subContainer.bounds = container.bounds;
+			
 		var next = draw_container(subContainer, tx, ty);
 		
 		switch (container.direction){
