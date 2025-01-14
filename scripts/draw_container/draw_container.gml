@@ -15,6 +15,12 @@ enum pattern{
 	leave
 }	
 
+//display
+enum display{
+	flex,
+	fixed
+}
+
 //direction
 enum dir{
 	row,
@@ -38,6 +44,7 @@ baseContainer = {
 	"marginLeft": 0,
 	"marginRight": 0,
 	"marginTop": 0,
+	"display": display.fixed,
 	"marginBottom": 0,
 	"offsetX": 0,
 	"offsetY": 0,
@@ -65,6 +72,7 @@ baseContainer = {
 	"justifyContent": fa_top,
 	"baked": true,
 	"parent": self,
+	"wrapped": false,
 	"content": [],
 }
 
@@ -140,7 +148,7 @@ function draw_container(container, cx, cy){
 	
 	var upperSurface = surface_get_target();
 	var overflowHidden = upperSurface != -1;
-	var wrapped = overflowHidden;
+	var wrapped = container.wrapped;
 	
 	if (wrapped == false){
 		container.bounds = {
@@ -188,6 +196,13 @@ function draw_container(container, cx, cy){
 		
 		x2 = min(x2, container.parent.tx + container.parent.width + container.parent.marginRight);
 		y2 = min(y2, container.parent.ty + container.parent.height + container.parent.marginBottom);
+	}else if (wrapped){
+		//apply parent's parent bounds
+		x1 = max(x1, container.parent.bounds.x1);
+		y1 = max(y1, container.parent.bounds.y1);
+		
+		x2 = min(container.tx + container.width, container.parent.bounds.x2);
+		y2 = min(container.ty + container.height, container.parent.bounds.y2);
 	}
 	
 	var mir = mouse_in_rectangle(x1, y1, x2, y2);
@@ -348,8 +363,11 @@ function draw_container(container, cx, cy){
 		var subContainer = container.content[i];
 		subContainer.parent = container;
 		
-		if (container.overflow == hidden and wrapped = false) subContainer.bounds = container.bounds;
-			
+		if (container.overflow == hidden and wrapped = false){
+			subContainer.bounds = container.bounds;
+			container.wrapped = true;
+		}
+		
 		var next = draw_container(subContainer, tx, ty);
 		
 		switch (container.direction){
