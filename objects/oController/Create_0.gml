@@ -33,14 +33,13 @@ var box = {
 	"alignItems": fa_center,
 	"justifyContent": fa_center,
 	"overflow": hidden,
-	"debug": true,
 	"step": function(){
 		color = c_red;
 		contentOffsetX += keyboard_check(ord("D")) - keyboard_check(ord("A"));
 	},
 	"onHover": function(){
 		color = c_yellow;	
-	}
+	},
 }
 
 var checker = {
@@ -53,7 +52,6 @@ var checker = {
 	"onHover": function(){
 		color = c_blue;	
 	},
-	"debug": true,
 }
 
 box.content = copy_styles_array(checker, 10);

@@ -1,4 +1,6 @@
-globalvar baseContainer;
+globalvar baseContainer, hovering;
+
+hovering = noone;
 
 //overflow
 #macro allow 0
@@ -36,6 +38,7 @@ baseContainer = {
 	"debug": false,
 	"alignItems": fa_left,
 	"twidth": 0,
+	"wrapped": false,
 	"theight": 0,
 	"paddingLeft": 0,
 	"paddingRight": 0,
@@ -46,6 +49,12 @@ baseContainer = {
 	"justifyContent": fa_top,
 	"baked": true,
 	"parent": self,
+	"bounds": {
+		"tx": -infinity,
+		"ty": -infinity,
+		"tx2": infinity,
+		"ty2": infinity,
+	},
 	"content": [],
 }
 
@@ -115,10 +124,19 @@ function draw_container(container, cx, cy){
 	
 	var upperSurface = surface_get_target();
 	var overflowHidden = upperSurface != -1;
-	var wrapped = (container.parent.parent.overflow == hidden);
+	var wrapped = container.wrapped;
 	
 	cx += container.marginLeft + container.offsetX;
 	cy += container.marginTop + container.offsetY;
+
+	if (!wrapped){
+		container.bounds = {
+			"tx": cx - container.paddingLeft,
+			"ty": cy - container.paddingTop,
+			"tx2": cx + container.width + container.paddingRight,
+			"ty2": cy + container.height + container.paddingBottom,
+		}
+	}
 
 	if (!overflowHidden){
 		container.tx = cx;
@@ -151,18 +169,21 @@ function draw_container(container, cx, cy){
 	
 	if (wrapped){
 		//apply parent's parent bounds
-		x1 = max(x1, container.parent.parent.tx - container.parent.parent.marginLeft);
-		y1 = max(y1, container.parent.parent.ty - container.parent.parent.marginTop);
+		x1 = max(x1, container.parent.bounds.tx);
+		y1 = max(y1, container.parent.bounds.ty);
 		
-		x2 = min(container.tx + container.width, container.parent.parent.tx + container.parent.parent.width + container.parent.parent.marginRight);
-		y2 = min(container.ty + container.height, container.parent.parent.ty + container.parent.parent.height + container.parent.parent.marginBottom);
+		x2 = min(container.tx + container.width,  container.parent.bounds.tx2);
+		y2 = min(container.ty + container.height, container.parent.bounds.ty2);
 	}
 	
 	var mir = mouse_in_rectangle(x1, y1, x2, y2);
 	
 	execute_script(container, "step");	
 	if (mir != noone){
-		execute_script(container, "onHover");	
+		execute_script(container, "onHover");
+		hovering = container;
+	}else if (hovering == container){
+		hovering = noone;		
 	}
 	
 	draw_background(container, cx, cy);
@@ -219,6 +240,14 @@ function draw_container(container, cx, cy){
 		var subContainer = container.content[i];
 		subContainer.parent = container;
 		
+		if (container.overflow == hidden){
+			subContainer.wrapped = true;
+			subContainer.bounds = container.bounds;
+		}else if (wrapped) {
+			subContainer.wrapped = true;
+			subContainer.bounds = container.bounds;
+		}
+		
 		var next = draw_container(subContainer, tx, ty);
 		
 		switch (container.direction){
@@ -267,6 +296,10 @@ function draw_container(container, cx, cy){
 		container.surface = surface_draw(container.surface, cx, cy);	
 		
 		if (overflowHidden) surface_reset_t();
+	}
+	
+	if (hovering == container and mouse_check_button_pressed(mb_left)){
+		execute_script(container, "onClick");	
 	}
 	
 	draw_set_color(bColor);
