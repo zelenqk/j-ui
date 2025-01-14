@@ -2,7 +2,7 @@ function draw_background(container, cx, cy){
 	switch (container.bgType){
 	case fill:
 		draw_set_color(container.color);
-		draw_rectangle(cx - container.paddingLeft, cy - container.paddingTop, cx + container.paddingRight + container.width - 1, cy + container.paddingBottom + container.height - 1, false);
+		draw_rectangle(cx, cy, cx + container.paddingRight + container.paddingLeft + container.width - 1, cy + container.paddingBottom + container.paddingTop + container.height - 1, false);
 		break;
 	case bgSurface:
 		switch (container.backgroundPattern){

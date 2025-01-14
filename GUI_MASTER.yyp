@@ -40,6 +40,7 @@
     {"id":{"name":"fntMain","path":"fonts/fntMain/fntMain.yy",},},
     {"id":{"name":"oController","path":"objects/oController/oController.yy",},},
     {"id":{"name":"rmJUIexample","path":"rooms/rmJUIexample/rmJUIexample.yy",},},
+    {"id":{"name":"bake_container","path":"scripts/bake_container/bake_container.yy",},},
     {"id":{"name":"copy_styles","path":"scripts/copy_styles/copy_styles.yy",},},
     {"id":{"name":"draw_background","path":"scripts/draw_background/draw_background.yy",},},
     {"id":{"name":"draw_container","path":"scripts/draw_container/draw_container.yy",},},

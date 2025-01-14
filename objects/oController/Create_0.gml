@@ -1,59 +1,40 @@
 main = {
 	"width": 200,
-	"height": 90,
-	"alignItems": fa_center,
-	"direction": dir.column,
-	"overflow": hidden,
-	"bgScale": 0.55,
-	"padding": 1,
-	"background": sTest,
+	"height": 125,
 	"bgType": bgSprite,
-}
-
-globalvar control;
-
-control = create_surface(display_get_gui_width(), display_get_gui_height());
-
-wrapping = {
-	"width": 200,
-	"height": 100,
+	"background": sTest,
+	"repetition": 1,
 	"overflow": hidden,
-	"alignItems": fa_center,
 	"direction": dir.column,
-	"justifyContent": fa_center,
 	"step": function(){
-		contentOffsetY += mouse_wheel_up() - mouse_wheel_down();	
+		contentOffsetY += mouse_wheel_up() - mouse_wheel_down();
 	}
 }
 
-var box = {
-	"width": 170,
+var container = {
+	"width": 180,
 	"height": 100,
-	"marginBottom": 4,
-	"alignItems": fa_center,
-	"justifyContent": fa_center,
+	"color": c_red,
 	"overflow": hidden,
+	"marginBottom": 2,
 	"step": function(){
-		color = c_red;
 		contentOffsetX += keyboard_check(ord("D")) - keyboard_check(ord("A"));
-	},
-	"onHover": function(){
-		color = c_yellow;	
-	},
+	}
 }
 
-var checker = {
+var mark = {
 	"width": 10,
 	"height": 10,
+	"color": c_black,
 	"marginRight": 2,
-	"step": function(){
-		color = c_black;
-	},
 	"onHover": function(){
-		color = c_blue;	
+		color = c_blue;
 	},
+	"step": function(){
+		color = c_black;	
+	}
 }
 
-box.content = copy_styles_array(checker, 10);
+container.content = copy_styles_array(mark, 10);
 
-wrapping.content = copy_styles_array(box, 10);
+main.content = copy_styles_array(container, 10);
