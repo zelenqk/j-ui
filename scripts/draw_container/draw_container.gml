@@ -9,18 +9,6 @@ globalvar baseContainer;
 #macro bgSurface 1
 #macro bgSprite 2
 
-enum pattern{
-	repetition,
-	stretch,
-	leave
-}	
-
-//display
-enum display{
-	flex,
-	fixed
-}
-
 //direction
 enum dir{
 	row,
@@ -38,13 +26,10 @@ baseContainer = {
 	"overflow": allow,
 	"draw": true,
 	"drawContent": true,
-	"repetitionH": 1,
-	"repetitionV": 1,
 	"direction": dir.row,
 	"marginLeft": 0,
 	"marginRight": 0,
 	"marginTop": 0,
-	"display": display.fixed,
 	"marginBottom": 0,
 	"offsetX": 0,
 	"offsetY": 0,
@@ -52,27 +37,15 @@ baseContainer = {
 	"alignItems": fa_left,
 	"twidth": 0,
 	"theight": 0,
-	"bounds": {
-		"x1": -infinity,
-		"y1": -infinity,
-		"x2": infinity,
-		"y2": infinity,
-	},
-	"backgroundPattern": 0,
-	"tx": 0,
-	"ty": 0,
 	"paddingLeft": 0,
 	"paddingRight": 0,
 	"paddingTop": 0,
 	"contentOffsetX": 0,
 	"contentOffsetY": 0,
 	"paddingBottom": 0,
-	"image_index": 0,
-	"bgScale": 0,
 	"justifyContent": fa_top,
 	"baked": true,
 	"parent": self,
-	"wrapped": false,
 	"content": [],
 }
 
@@ -119,12 +92,6 @@ function bake_container(container){
 			container.paddingTop = container.paddingV;
 			container.paddingBottom = container.paddingV;
 			break;
-			
-		//repetition
-		case "repetition":
-			container.repetitionH = container.repetition;
-			container.repetitionV = container.repetition;
-			break;
 		}
 	}
 	
@@ -148,16 +115,7 @@ function draw_container(container, cx, cy){
 	
 	var upperSurface = surface_get_target();
 	var overflowHidden = upperSurface != -1;
-	var wrapped = container.wrapped;
-	
-	if (wrapped == false){
-		container.bounds = {
-			"x1": container.tx, 	
-			"y1": container.ty, 
-			"x2": container.tx + container.width, 	
-			"y2": container.ty + container.height, 
-		}
-	}
+	var wrapped = (container.parent.parent.overflow == hidden);
 	
 	cx += container.marginLeft + container.offsetX;
 	cy += container.marginTop + container.offsetY;
@@ -182,27 +140,22 @@ function draw_container(container, cx, cy){
 		
 		x2 = min(container.tx + container.width, container.parent.tx + container.parent.width + container.parent.marginRight);
 		y2 = min(container.ty + container.height, container.parent.ty + container.parent.height + container.parent.marginBottom);
-	}else if (overflowHidden and wrapped){
-		//apply parent's parent bounds
-		x1 = max(x1, container.parent.bounds.x1);
-		y1 = max(y1, container.parent.bounds.y1);
-		
-		x2 = min(container.tx + container.width, container.parent.bounds.x2);
-		y2 = min(container.ty + container.height, container.parent.bounds.y2);
-	
+	}else if (overflowHidden){
 		//now apply parent's bounds
 		x1 = max(x1, container.parent.tx - container.parent.marginLeft);
 		y1 = max(y1, container.parent.ty - container.parent.marginTop);
 		
 		x2 = min(x2, container.parent.tx + container.parent.width + container.parent.marginRight);
 		y2 = min(y2, container.parent.ty + container.parent.height + container.parent.marginBottom);
-	}else if (wrapped){
+	}
+	
+	if (wrapped){
 		//apply parent's parent bounds
-		x1 = max(x1, container.parent.bounds.x1);
-		y1 = max(y1, container.parent.bounds.y1);
+		x1 = max(x1, container.parent.parent.tx - container.parent.parent.marginLeft);
+		y1 = max(y1, container.parent.parent.ty - container.parent.parent.marginTop);
 		
-		x2 = min(container.tx + container.width, container.parent.bounds.x2);
-		y2 = min(container.ty + container.height, container.parent.bounds.y2);
+		x2 = min(container.tx + container.width, container.parent.parent.tx + container.parent.parent.width + container.parent.parent.marginRight);
+		y2 = min(container.ty + container.height, container.parent.parent.ty + container.parent.parent.height + container.parent.parent.marginBottom);
 	}
 	
 	var mir = mouse_in_rectangle(x1, y1, x2, y2);
@@ -212,104 +165,7 @@ function draw_container(container, cx, cy){
 		execute_script(container, "onHover");	
 	}
 	
-	switch (container.bgType){
-	case fill:
-		draw_set_color(container.color);
-		draw_rectangle(cx - container.paddingLeft, cy - container.paddingTop, cx + container.paddingRight + container.width - 1, cy + container.paddingBottom + container.height - 1, false);
-		break;
-	case bgSurface:
-		switch (container.backgroundPattern){
-		default:
-			container.background = surface_draw(container.background, cx - container.paddingLeft, cy - container.paddingTop, container.width + container.paddingLeft + container.paddingRight, container.height + container.paddingTop + container.paddingBottom)
-			break;
-		case pattern.repetition:
-			if (container.bgScale == 0){
-				var width = container.width / container.repetitionH;
-				var height = container.height / container.repetitionV;
-				
-				var startx = cx;
-				var starty = cy;
-				
-				for(var i = 0; i < container.repetitionH; i++){
-					var col = i mod container.repetitionH;
-					var row = i div container.repetitionH;
-					
-					var tx = (col * width) + startx;
-					var ty = (row * height) + starty;
-					
-					container.background = surface_draw(container.background, tx, ty, width, height);
-				}
-			}else{
-				var width = (container.bgScale * get_surface_width(container.background));
-				var height = (container.bgScale * get_surface_height(container.background));
-				
-				// Calculate integer repetitions
-				var repetitionH = ceil((container.width + container.paddingLeft + container.paddingRight) / width);
-				var repetitionV = ceil((container.height + container.paddingTop + container.paddingBottom) / height);
-				
-				var startx = cx;
-				var starty = cy;
-				
-				for (var i = 0; i < repetitionH * repetitionV; i++) {
-					var col = i mod repetitionH;
-					var row = i div repetitionH;
-					
-					var tx = (col * width) + startx;
-					var ty = (row * height) + starty; 
-					
-					container.background = surface_draw(container.background, tx, ty, width, height);
-				}
-			}
-			break;
-		}
-		break;
-	case bgSprite:
-		switch (container.backgroundPattern){
-		default:
-			draw_sprite_stretched(container.background, container.image_index, cx - container.paddingLeft, cy - container.paddingTop, container.width + container.paddingLeft + container.paddingRight, container.height + container.paddingTop + container.paddingBottom)
-			break;
-		case pattern.repetition:
-			if (container.bgScale == 0){
-				var width  = (container.width + container.paddingLeft + container.paddingRight) / container.repetitionH;
-				var height = (container.height + container.paddingTop + container.paddingBottom) / container.repetitionV;
-				
-				var startx = cx;
-				var starty = cy;
-				
-				for(var i = 0; i < container.repetitionH * container.repetitionV; i++){
-					var col = i mod container.repetitionH;
-					var row = i div container.repetitionH;
-					
-					var tx = (col * width) + startx;
-					var ty = (row * height) + starty;
-					
-					draw_sprite_stretched(container.background, container.image_index, tx, ty, width, height);
-				}
-			}else{
-				var width = (container.bgScale * sprite_get_width(container.background));
-				var height = (container.bgScale * sprite_get_height(container.background));
-				
-				// Calculate integer repetitions
-				var repetitionH = ceil((container.width + container.paddingLeft + container.paddingRight) / width);
-				var repetitionV = ceil((container.height + container.paddingTop + container.paddingBottom) / height);
-				
-				var startx = cx;
-				var starty = cy;
-				
-				for (var i = 0; i < repetitionH * repetitionV; i++) {
-					var col = i mod repetitionH; // Column index
-					var row = i div repetitionH; // Row index
-					
-					var tx = (col * width) + startx;
-					var ty = (row * height) + starty; 
-					
-					draw_sprite_stretched(container.background, container.image_index, tx, ty, width, height);
-				}
-			}
-			break;
-		}
-		break;
-	}
+	draw_background(container, cx, cy);
 	
 	if (container.debug){
 		var mir = mouse_in_rectangle(x1, y1, x2, y2);
@@ -362,11 +218,6 @@ function draw_container(container, cx, cy){
 	for(var i = 0; i < subContainersN; i++){
 		var subContainer = container.content[i];
 		subContainer.parent = container;
-		
-		if (container.overflow == hidden and wrapped = false){
-			subContainer.bounds = container.bounds;
-			container.wrapped = true;
-		}
 		
 		var next = draw_container(subContainer, tx, ty);
 		

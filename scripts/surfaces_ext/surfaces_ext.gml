@@ -22,7 +22,10 @@ function create_surface(w, h, format = surface_rgba8unorm){
 function surface_target(surface){
 	if (!surface_exists(surface) and window_has_focus()) surface = resurface(surface);
 	
-	if (surface_exists(surface)) surface_set_target(surface);
+	if (surface_exists(surface)) {
+		surface_set_target(surface);
+
+	}
 	
 	return surface;
 }
