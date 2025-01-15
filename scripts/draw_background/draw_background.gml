@@ -101,11 +101,13 @@ function draw_background(container, cx, cy, upperSurface){
 			break;
 		}
 		break;
-	}	
+	}
 	
-	gpu_set_blendmode_ext(bm_zero, bm_src_alpha);
-	draw_sprite(container.borderCookie, 0, 0, 0);
-	gpu_set_blendmode(bm_normal);
+	if !(container.paddingLeft == 0 and container.paddingRight == 0 and container.paddingTop == 0 and container.paddingBottom == 0){
+		gpu_set_blendmode_ext(bm_zero, bm_src_alpha);
+		draw_sprite(container.borderCookie, 0, 0, 0);
+		gpu_set_blendmode(bm_normal);
+	}
 	
 	surface_reset_t();
 	

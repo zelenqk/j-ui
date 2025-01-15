@@ -9,18 +9,18 @@ function draw_container(container, cx, cy){
 	var bFont = draw_get_font();
 	
 	cx += (container.marginLeft + container.offsetX);
-	cy += (container.marginTop + container.offsetY);
+	cx += (container.marginLeft + container.offsetX);
 	
 	//prepare bools
 	var upperSurface = surface_get_target();
 	var overflowHidden = (container.parent.overflow == hidden);
 	var wrapped = container.wrapped;
 	
-	var x1 = container.tx;
-	var y1 = container.ty;
+	var x1 = container.tx - container.paddingLeft + container.parent.paddingLeft;
+	var y1 = container.ty - container.paddingTop + container.parent.paddingTop;
 	
-	var x2 = x1 + container.width;
-	var y2 = y1 + container.height;
+	var x2 = x1 + container.width + container.paddingLeft + container.paddingRight;
+	var y2 = y1 + container.height + container.paddingTop + container.paddingBottom;
 	
 	if (overflowHidden){
 		x1 = max(x1, container.parent.tx);	
@@ -48,7 +48,6 @@ function draw_container(container, cx, cy){
 
 	draw_background(container, cx, cy, upperSurface);
 	
-	
 	cx += container.paddingLeft;
 	cy += container.paddingTop;
 	
@@ -63,23 +62,32 @@ function draw_container(container, cx, cy){
 		container.tx = cx;
 		container.ty = cy;
 	}
-	//draw content
-	var subContainersN = array_length(container.content);
-
-	var tx = container.contentOffsetX + align(container.alignItems, container.width, container.twidth);
-	var ty = container.contentOffsetY + justify(container.justifyContent, container.height, container.theight);
 	
+	//draw content	
 	var apply = (container.overflow == hidden);
-		
+	
 	if (apply){
 		container.surface = surface_target(container.surface);
 		draw_clear_alpha(c_black, 0);
 	}
 
 	draw_string(container, cx, cy);
+	
+	var subContainersN = array_length(container.content);
+
+	var tx = container.contentOffsetX + align(container.alignItems, container.width, container.twidth);
+	var ty = container.contentOffsetY + justify(container.justifyContent, container.height, container.theight);
 
 	var twidth = 0;
-	var theight = 0;
+	var theight = 0
+	
+	var startx = tx;
+	var starty = ty;
+	
+	var previous = {
+		"w": 0,
+		"h": 0,
+	}
 	
 	for(var i = 0; i < subContainersN; i++){
 		var subContainer = container.content[i];
@@ -88,6 +96,21 @@ function draw_container(container, cx, cy){
 		if (apply or wrapped){
 			subContainer.wrapped = true;
 			subContainer.bounds = container.bounds;
+		}
+		
+		switch (container.direction){
+		case dir.box:
+			if (tx + subContainer.width > container.width){
+				tx = startx;
+				ty = starty + container.theight;
+			}
+			break;
+		case dir.stack:
+			if (ty + subContainer.height > container.height){
+				ty = starty;
+				tx = container.twidth;
+			}
+			break;
 		}
 		
 		subContainer.tx = container.tx + tx;
@@ -108,12 +131,35 @@ function draw_container(container, cx, cy){
 			
 			if (twidth < next.w) twidth = next.w;
 			break;
+		case dir.box:
+			tx += next.w;
+			twidth += next.w;
+			
+			if (theight < next.h) theight = next.h;
+			
+			if (tx > container.width or tx < 0){
+				tx = startx;
+				ty = starty + container.theight;
+			}
+			break;
+		case dir.stack:
+			ty += next.h;
+			theight += next.h;
+			
+			if (twidth < next.w) twidth = next.w;
+			
+			if (ty > container.height or ty < 0){
+				ty = starty;
+				tx = container.twidth;;
+			}
+			break;
 		}
+		
+		previous = next;
 	}
 	
 	if (container.twidth < twidth) container.twidth = twidth;
 	if (container.theight < theight) container.theight = theight;
-	
 	
 	surface_reset_t();
 	

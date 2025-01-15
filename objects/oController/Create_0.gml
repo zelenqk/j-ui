@@ -9,7 +9,11 @@ main = {
 	"paddingH": 32,	
 	"borderRadius": 12,
 	"goBack": 0,
+	"onHover": function(){
+		color = c_blue;
+	},
 	"step": function(){
+		color = c_red
 		contentOffsetY += mouse_wheel_up() - mouse_wheel_down();
 	}
 }
@@ -18,10 +22,11 @@ var container = {
 	"width": 180,
 	"height": 100,
 	"color": c_red,
-	"overflow": hidden,
 	"justifyContent": fa_center,
-	"alignItems": fa_center,
+	"direction": dir.box,
+	"overflow": hidden,
 	"marginBottom": 2,
+	"padding": 3,
 	"borderRadius": 12,
 	"step": function(){
 		contentOffsetX += keyboard_check(ord("D")) - keyboard_check(ord("A"));
@@ -39,10 +44,11 @@ var mark = {
 	},
 	"step": function(){
 		color = c_black;	
-	}
+	},
+	"marginTop": 2
 }
 
-container.content = copy_styles_array(mark, 10);
+container.content = copy_styles_array(mark, 30);
 
 main.content = copy_styles_array(container, 10);
 
