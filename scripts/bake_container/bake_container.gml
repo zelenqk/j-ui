@@ -26,6 +26,30 @@ function bake_container(container){
 			container.marginBottom = container.marginV;
 			break;
 			
+		//border radius stuff
+		case "borderRadius":
+			container.radiusTopLeft = container.borderRadius;
+			container.radiusBottomLeft = container.borderRadius;
+			container.radiusTopRight = container.borderRadius;
+			container.radiusBottomRight = container.borderRadius;
+			break;
+		case "radiusLeft":
+			container.radiusTopLeft = container.radiusLeft;
+			container.radiusBottomLeft = container.radiusLeft;
+			break;
+		case "radiusRight":
+			container.radiusTopRight = container.radiusRight;
+			container.radiusBottomRight = container.radiusRight;
+			break;
+		case "radiusTop":
+			container.radiusTopRight = container.radiusTop;
+			container.radiusTopLeft = container.radiusTop;
+			break;
+		case "radiusBottom":
+			container.radiusBottomRight = container.radiusBottom;
+			container.radiusBottomLeft = container.radiusBottom;
+			break;
+		
 		//padding stuff
 		case "padding":
 			container.paddingLeft = container.padding;
@@ -51,5 +75,7 @@ function bake_container(container){
 	}
 	
 	if (container.overflow == hidden) container.surface = create_surface(container.width, container.height);
+	container.backgroundSurface = create_surface(container.width + container.paddingLeft + container.paddingRight, container.height + container.paddingTop + container.paddingBottom);
+	container.borderCookie = rounded_rectangle(container.width + container.paddingLeft + container.paddingRight, container.height, container.radiusTopLeft, container.radiusTopRight, container.radiusBottomLeft, container.radiusBottomRight, c_black);
 	container.baked = true;
 }

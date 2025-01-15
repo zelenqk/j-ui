@@ -35,7 +35,6 @@ function surface_reset_t(){
 }
 
 function resurface(surface){
-	show_debug_message("hui")
 	if (surface < 0) return;
 	
 	var surfaceInfo = surfaceData[surface];

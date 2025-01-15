@@ -1,11 +1,11 @@
 main = {
 	"width": 200,
 	"height": 125,
-	"bgType": bgSprite,
-	"background": sTest,
-	"repetition": 1,
 	"overflow": hidden,
 	"direction": dir.column,
+	"background": c_red,
+	"color": c_blue,
+	"alignItems": fa_center,
 	"step": function(){
 		contentOffsetY += mouse_wheel_up() - mouse_wheel_down();
 	}
@@ -16,7 +16,10 @@ var container = {
 	"height": 100,
 	"color": c_red,
 	"overflow": hidden,
+	"justifyContent": fa_center,
+	"alignItems": fa_center,
 	"marginBottom": 2,
+	"borderRadius": 12,
 	"step": function(){
 		contentOffsetX += keyboard_check(ord("D")) - keyboard_check(ord("A"));
 	}
@@ -26,6 +29,7 @@ var mark = {
 	"width": 10,
 	"height": 10,
 	"color": c_black,
+	"direction": dir.column,
 	"marginRight": 2,
 	"onHover": function(){
 		color = c_blue;

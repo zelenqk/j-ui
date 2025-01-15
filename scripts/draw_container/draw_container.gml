@@ -52,9 +52,17 @@ baseContainer = {
 	"overflow": allow,
 	"draw": true,
 	"debug": false,
+	"alignItems": fa_left,
+	"justifyContent": fa_top,
 
 	//children
 	"content": [],
+	
+	//border radius
+	"radiusTopLeft": 0,
+	"radiusTopRight": 0,
+	"radiusBottomLeft": 0,
+	"radiusBottomRight": 0,
 	
 	//
 	"paddingLeft": 0,
@@ -143,7 +151,7 @@ function draw_container(container, cx, cy){
 		execute_script(container, "onHover")	
 	}
 
-	draw_background(container, cx, cy);
+	draw_background(container, cx, cy, upperSurface);
 	
 	cx += container.paddingLeft;
 	cy += container.paddingTop;
@@ -151,21 +159,24 @@ function draw_container(container, cx, cy){
 	//draw content
 	var subContainersN = array_length(container.content);
 
-	var tx = container.contentOffsetX;
-	var ty = container.contentOffsetY;
+	var tx = container.contentOffsetX + align(container.alignItems, container.width, container.twidth);
+	var ty = container.contentOffsetY + justify(container.justifyContent, container.height, container.theight);
 	
 	var apply = (container.overflow == hidden);
 		
-	if (container.overflow == hidden){
+	if (apply){
 		container.surface = surface_target(container.surface);
 		draw_clear_alpha(c_black, 0);
 	}
+	
+	var twidth = 0;
+	var theight = 0;
 	
 	for(var i = 0; i < subContainersN; i++){
 		var subContainer = container.content[i];
 		subContainer.parent = container;
 		
-		if (container.overflow == hidden or wrapped){
+		if (apply or wrapped){
 			subContainer.wrapped = true;
 			subContainer.bounds = container.bounds;
 		}
@@ -175,37 +186,34 @@ function draw_container(container, cx, cy){
 		
 		var next = draw_container(subContainer, cx * !apply + tx, cy * !apply + ty);
 		
-		if (subContainer.debug){
-			if (apply) surface_reset_t();
-			
-			draw_rectangle(subContainer.tx, subContainer.ty, subContainer.tx + subContainer.width, subContainer.ty + subContainer.height, 1);
-			
-			if (apply) container.surface = surface_target(container.surface);
-		}
-		
 		switch (container.direction){
 		case dir.row:
 			tx += next.w;
+			twidth += next.w;
+			
+			if (theight < next.h) theight = next.h;
 			break;
 		case dir.column:
 			ty += next.h;
+			theight += next.h;
+			
+			if (twidth < next.w) twidth = next.w;
 			break;
 		}
 	}
+	
+	if (container.twidth < twidth) container.twidth = twidth;
+	if (container.theight < theight) container.theight = theight;
 	
 	surface_reset_t();
 	
 	if (wrapped) upperSurface = surface_target(upperSurface);
 
 	if (container.overflow == hidden){
-		
 		container.surface = surface_draw(container.surface, cx, cy);
 		
 		if (wrapped) surface_reset_t();
 	}
-	
-	if (container.twidth < tx) container.twidth = tx;
-	if (container.theight < ty) container.theight = ty;
 	
 	if (container.display = display.flex){
 		container.width = container.twidth;	
@@ -229,4 +237,30 @@ function mouse_in_rectangle(tx, ty, tx1, ty1){
 	}
 	
 	return noone;
+}
+
+function justify(justifyContent, height, theight){
+	switch (justifyContent){
+	case fa_center:
+		return (height / 2 - theight / 2);
+		break;
+	case fa_bottom:
+		return (height - theight);
+		break;
+	}
+	
+	return 0;
+}
+
+function align(alignItems, width, twidth){
+	switch (alignItems){
+	case fa_center:
+		return (width / 2 - twidth / 2);
+		break;
+	case fa_right:
+		return (width - twidth);
+		break;
+	}
+	
+	return 0;
 }
