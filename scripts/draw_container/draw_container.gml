@@ -206,14 +206,18 @@ function draw_container(container, cx, cy){
 	
 	surface_reset_t();
 	
-	if (wrapped) upperSurface = surface_target(upperSurface);
-
+	if (wrapped) {
+		upperSurface = surface_target(upperSurface);
+	}
+	
 	if (container.overflow == hidden){
 		container.surface = surface_draw(container.surface, cx, cy);
 		
-		gpu_set_blendmode_ext(bm_zero, bm_src_alpha);
-		draw_sprite_stretched(container.borderCookie, 0, cx, cy, container.width, container.height);
-		gpu_set_blendmode(bm_normal);
+		if (container.paddingLeft == 0 and container.paddingRight == 0 and container.paddingTop == 0 and container.paddingBottom == 0){
+			gpu_set_blendmode_ext(bm_zero, bm_src_alpha);
+			draw_sprite_stretched(container.borderCookie, 0, cx, cy, container.width, container.height);
+			gpu_set_blendmode(bm_normal);
+		}
 		
 		if (wrapped) surface_reset_t();
 	}

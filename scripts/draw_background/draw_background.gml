@@ -101,15 +101,18 @@ function draw_background(container, cx, cy, upperSurface){
 			break;
 		}
 		break;
-	}
+	}	
+	
+	gpu_set_blendmode_ext(bm_zero, bm_src_alpha);
+	draw_sprite(container.borderCookie, 0, 0, 0);
+	gpu_set_blendmode(bm_normal);
 	
 	surface_reset_t();
 	
-	if (upperSurface != -1) upperSurface = surface_target(upperSurface);
+	if (upperSurface != -1) {
+		upperSurface = surface_target(upperSurface);
+	}
 	
 	container.backgroundSurface = surface_draw(container.backgroundSurface, cx, cy);
 
-	gpu_set_blendmode_ext(bm_zero, bm_src_alpha);
-	draw_sprite_stretched(container.borderCookie, 0, cx, cy, container.width + container.paddingLeft + container.paddingRight, container.height + container.paddingTop + container.paddingBottom);
-	gpu_set_blendmode(bm_normal);
 }

@@ -6,7 +6,8 @@ main = {
 	"background": c_red,
 	"color": c_blue,
 	"alignItems": fa_center,
-	"padding": 12,
+	"paddingH": 32,	
+	"borderRadius": 12,
 	"step": function(){
 		contentOffsetY += mouse_wheel_up() - mouse_wheel_down();
 	}
@@ -16,6 +17,7 @@ var container = {
 	"width": 180,
 	"height": 100,
 	"color": c_red,
+	"overflow": hidden,
 	"justifyContent": fa_center,
 	"alignItems": fa_center,
 	"marginBottom": 2,
