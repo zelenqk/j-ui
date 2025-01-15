@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"draw_string",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"draw_string",
+  "parent":{
+    "name":"util",
+    "path":"folders/JUI-System/util.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

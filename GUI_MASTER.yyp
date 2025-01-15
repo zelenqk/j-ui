@@ -44,6 +44,7 @@
     {"id":{"name":"copy_styles","path":"scripts/copy_styles/copy_styles.yy",},},
     {"id":{"name":"draw_background","path":"scripts/draw_background/draw_background.yy",},},
     {"id":{"name":"draw_container","path":"scripts/draw_container/draw_container.yy",},},
+    {"id":{"name":"draw_string","path":"scripts/draw_string/draw_string.yy",},},
     {"id":{"name":"rounded_rectangle","path":"scripts/rounded_rectangle/rounded_rectangle.yy",},},
     {"id":{"name":"surfaces_ext","path":"scripts/surfaces_ext/surfaces_ext.yy",},},
     {"id":{"name":"sTest","path":"sprites/sTest/sTest.yy",},},

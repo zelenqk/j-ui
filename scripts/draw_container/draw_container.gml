@@ -1,96 +1,3 @@
-globalvar baseContainer, hovering;
-
-hovering = noone;
-
-//overflow
-#macro allow 0
-#macro hidden 1
-
-//background
-#macro fill 0
-#macro bgSurface 1
-#macro bgSprite 2
-
-enum pattern{
-	repetition,
-	stretch
-}
-
-//display
-enum display{
-	fixed,
-	flex
-}
-
-//direction
-enum dir{
-	row,
-	column,
-	box,
-	stack
-}
-
-baseContainer = {
-	//general
-	"width": 0,
-	"height": 0,
-	"bgType": fill,
-	"background": c_white,
-	"color": c_white,
-	"direction": dir.row,
-	"display": display.fixed,
-	"offsetX": 0,
-	"offsetY": 0,
-	"parent": self,
-	"backgroundPattern": pattern.repetition,
-	"bgScale": 1,
-	"image_index": 0,
-	"contentOffsetX": 0,
-	"contentOffsetY": 0,
-	
-	//draw config
-	"overflow": allow,
-	"draw": true,
-	"debug": false,
-	"alignItems": fa_left,
-	"justifyContent": fa_top,
-
-	//children
-	"content": [],
-	
-	//border radius
-	"radiusTopLeft": 0,
-	"radiusTopRight": 0,
-	"radiusBottomLeft": 0,
-	"radiusBottomRight": 0,
-	
-	//
-	"paddingLeft": 0,
-	"paddingRight": 0,
-	"paddingTop": 0,
-	"paddingBottom": 0,
-	
-	"marginLeft": 0,
-	"marginRight": 0,
-	"marginTop": 0,
-	"marginBottom": 0,
-	
-	//variables you shouldnt define
-	"baked": true,
-	"surface": noone,
-	"backgroundSurface": noone,
-	"tx": 0,
-	"ty": 0,
-	"twidth": 0,
-	"theight": 0,
-	"wrapped": false,
-	"bounds": {
-		"x": -infinity,
-		"y": -infinity,
-		"x1": infinity,
-		"y1": infinity,
-	}
-}
 
 function draw_container(container, cx, cy){
 	if (container[$ "baked"] == undefined) bake_container(container);
@@ -141,6 +48,7 @@ function draw_container(container, cx, cy){
 
 	draw_background(container, cx, cy, upperSurface);
 	
+	
 	cx += container.paddingLeft;
 	cy += container.paddingTop;
 	
@@ -167,7 +75,9 @@ function draw_container(container, cx, cy){
 		container.surface = surface_target(container.surface);
 		draw_clear_alpha(c_black, 0);
 	}
-	
+
+	draw_string(container, cx, cy);
+
 	var twidth = 0;
 	var theight = 0;
 	
@@ -203,6 +113,7 @@ function draw_container(container, cx, cy){
 	
 	if (container.twidth < twidth) container.twidth = twidth;
 	if (container.theight < theight) container.theight = theight;
+	
 	
 	surface_reset_t();
 	

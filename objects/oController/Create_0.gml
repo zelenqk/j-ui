@@ -8,6 +8,7 @@ main = {
 	"alignItems": fa_center,
 	"paddingH": 32,	
 	"borderRadius": 12,
+	"goBack": 0,
 	"step": function(){
 		contentOffsetY += mouse_wheel_up() - mouse_wheel_down();
 	}
@@ -44,3 +45,13 @@ var mark = {
 container.content = copy_styles_array(mark, 10);
 
 main.content = copy_styles_array(container, 10);
+
+
+textTest = {
+	"width": 100,
+	"height": 24,
+	"text": "Hello world",
+	"textFit": true,
+	"newLine": true,
+	"textColor": c_red,
+}
