@@ -76,6 +76,6 @@ function bake_container(container){
 	
 	if (container.overflow == hidden) container.surface = create_surface(container.width, container.height);
 	container.backgroundSurface = create_surface(container.width + container.paddingLeft + container.paddingRight, container.height + container.paddingTop + container.paddingBottom);
-	container.borderCookie = rounded_rectangle(container.width + container.paddingLeft + container.paddingRight, container.height, container.radiusTopLeft, container.radiusTopRight, container.radiusBottomLeft, container.radiusBottomRight, c_black);
+	container.borderCookie = rounded_rectangle(container.width, container.height, container.radiusTopLeft, container.radiusTopRight, container.radiusBottomLeft, container.radiusBottomRight, c_black);
 	container.baked = true;
 }

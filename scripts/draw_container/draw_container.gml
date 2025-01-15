@@ -109,18 +109,6 @@ function draw_container(container, cx, cy){
 	var overflowHidden = (container.parent.overflow == hidden);
 	var wrapped = container.wrapped;
 	
-	if (!overflowHidden and !wrapped){
-		container.bounds = {
-			"x1": cx,
-			"y1": cy,
-			"x2": cx + container.width + container.paddingRight,
-			"y2": cy + container.height + container.paddingBottom,
-		}
-		
-		container.tx = cx;
-		container.ty = cy;
-	}
-	
 	var x1 = container.tx;
 	var y1 = container.ty;
 	
@@ -156,6 +144,17 @@ function draw_container(container, cx, cy){
 	cx += container.paddingLeft;
 	cy += container.paddingTop;
 	
+	if (!overflowHidden and !wrapped){
+		container.bounds = {
+			"x1": cx,
+			"y1": cy,
+			"x2": cx + container.width,
+			"y2": cy + container.height,
+		}
+		
+		container.tx = cx;
+		container.ty = cy;
+	}
 	//draw content
 	var subContainersN = array_length(container.content);
 
@@ -211,6 +210,10 @@ function draw_container(container, cx, cy){
 
 	if (container.overflow == hidden){
 		container.surface = surface_draw(container.surface, cx, cy);
+		
+		gpu_set_blendmode_ext(bm_zero, bm_src_alpha);
+		draw_sprite_stretched(container.borderCookie, 0, cx, cy, container.width, container.height);
+		gpu_set_blendmode(bm_normal);
 		
 		if (wrapped) surface_reset_t();
 	}
