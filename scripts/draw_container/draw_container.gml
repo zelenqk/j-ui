@@ -1,4 +1,3 @@
-
 function draw_container(container, cx, cy){
 	if (container[$ "baked"] == undefined) bake_container(container);
 	if (!container.draw) return {"w": 0, "h": 0};
@@ -16,8 +15,8 @@ function draw_container(container, cx, cy){
 	var overflowHidden = (container.parent.overflow == hidden);
 	var wrapped = container.wrapped;
 	
-	var x1 = container.tx - container.paddingLeft + container.parent.paddingLeft;
-	var y1 = container.ty - container.paddingTop + container.parent.paddingTop;
+	var x1 = container.tx - container.paddingLeft;
+	var y1 = container.ty - container.paddingTop;
 	
 	var x2 = x1 + container.width + container.paddingLeft + container.paddingRight;
 	var y2 = y1 + container.height + container.paddingTop + container.paddingBottom;
@@ -40,10 +39,14 @@ function draw_container(container, cx, cy){
 	
 	var mir = mouse_in_rectangle(x1, y1, x2, y2);
 	
-	execute_script(container, "step");
-
 	if (mir != noone){
-		execute_script(container, "onHover")	
+		execute_script(container, "onHover");
+		
+		hovering = container;
+	}
+	
+	if (hovering == container and mir == noone){
+		hovering = noone;		
 	}
 
 	draw_background(container, cx, cy, upperSurface);
@@ -168,6 +171,13 @@ function draw_container(container, cx, cy){
 		container.height = container.theight;	
 	}
 	
+	execute_script(container, "step");
+
+	if (hovering == container){
+		execute_script(container, "onTrueHover");
+		if (mouse_check_button_pressed(mb_any)) execute_script(container, "onClick");
+	}
+	
 	draw_set_color(bColor);
 	draw_set_alpha(bAlpha);
 	draw_set_font(bFont);
@@ -181,7 +191,7 @@ function execute_script(container, name){
 
 function mouse_in_rectangle(tx, ty, tx1, ty1){
 	for(var i = 0; i < 10; i++){
-		if (point_in_rectangle(device_mouse_x_to_gui(i), device_mouse_y_to_gui(i), tx, ty, tx1, ty1)) return i;	
+		if (point_in_rectangle(device_mouse_x_to_gui(i), device_mouse_y_to_gui(i), tx, ty, tx1 - 1, ty1 - 1)) return i;	
 	}
 	
 	return noone;

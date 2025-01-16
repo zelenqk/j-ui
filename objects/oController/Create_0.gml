@@ -6,10 +6,10 @@ main = {
 	"background": c_red,
 	"color": c_blue,
 	"alignItems": fa_center,
-	"paddingH": 32,	
 	"borderRadius": 12,
+	"paddingH": 32,
 	"goBack": 0,
-	"onHover": function(){
+	"onTrueHover": function(){
 		color = c_blue;
 	},
 	"step": function(){
@@ -26,7 +26,6 @@ var container = {
 	"direction": dir.box,
 	"overflow": hidden,
 	"marginBottom": 2,
-	"padding": 3,
 	"borderRadius": 12,
 	"step": function(){
 		contentOffsetX += keyboard_check(ord("D")) - keyboard_check(ord("A"));
@@ -41,6 +40,9 @@ var mark = {
 	"marginRight": 2,
 	"onHover": function(){
 		color = c_blue;
+	},
+	"onClick": function(){
+		show_message("hui");
 	},
 	"step": function(){
 		color = c_black;	
@@ -63,4 +65,12 @@ textTest = {
 	"padding": 6,
 	"borderRadius": 32,
 	"textColor": c_red,
+	"onHover": function(){
+		color = c_blue;
+		textColor = c_green;
+	},
+	"step": function(){
+		color = c_white;
+		textColor = c_black;
+	}
 }
