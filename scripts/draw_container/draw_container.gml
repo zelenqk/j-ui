@@ -71,12 +71,16 @@ function draw_container(container, cx, cy){
 		draw_clear_alpha(c_black, 0);
 	}
 
-	draw_string(container, cx, cy);
 	
 	var subContainersN = array_length(container.content);
 
 	var tx = container.contentOffsetX + align(container.alignItems, container.width, container.twidth);
 	var ty = container.contentOffsetY + justify(container.justifyContent, container.height, container.theight);
+
+	container.twidth = 0;
+	container.theight = 0;
+	
+	draw_string(container, cx, cy);
 
 	var twidth = 0;
 	var theight = 0
@@ -84,7 +88,7 @@ function draw_container(container, cx, cy){
 	var startx = tx;
 	var starty = ty;
 	
-	var previous = {
+	var next = {
 		"w": 0,
 		"h": 0,
 	}
@@ -98,64 +102,44 @@ function draw_container(container, cx, cy){
 			subContainer.bounds = container.bounds;
 		}
 		
-		switch (container.direction){
-		case dir.box:
-			if (tx + subContainer.width > container.width){
-				tx = startx;
-				ty = starty + container.theight;
-			}
-			break;
-		case dir.stack:
-			if (ty + subContainer.height > container.height){
-				ty = starty;
-				tx = container.twidth;
-			}
-			break;
-		}
-		
 		subContainer.tx = container.tx + tx;
 		subContainer.ty = container.ty + ty;
-		
+
 		var next = draw_container(subContainer, cx * !apply + tx, cy * !apply + ty);
 		
-		switch (container.direction){
+		switch (container.direction) {
 		case dir.row:
 			tx += next.w;
 			twidth += next.w;
-			
-			if (theight < next.h) theight = next.h;
+			theight = max(theight, next.h);
 			break;
 		case dir.column:
 			ty += next.h;
 			theight += next.h;
-			
-			if (twidth < next.w) twidth = next.w;
+			twidth = max(twidth, next.w);
 			break;
 		case dir.box:
 			tx += next.w;
-			twidth += next.w;
+			twidth = max(twidth, tx + next.w - startx);
+			theight = max(theight, next.h);
 			
-			if (theight < next.h) theight = next.h;
-			
-			if (tx > container.width or tx < 0){
-				tx = startx;
-				ty = starty + container.theight;
+			if (tx > container.width or tx < 0) {
+				tx = startx * (tx > 0);
+				ty += theight;
 			}
 			break;
 		case dir.stack:
 			ty += next.h;
-			theight += next.h;
+			theight = max(theight, ty + next.h - starty);
+			twidth = max(twidth, next.w);
 			
-			if (twidth < next.w) twidth = next.w;
-			
-			if (ty > container.height or ty < 0){
+			if (ty > container.height) {
 				ty = starty;
-				tx = container.twidth;;
+				tx += twidth;
+				twidth = next.w;
 			}
 			break;
 		}
-		
-		previous = next;
 	}
 	
 	if (container.twidth < twidth) container.twidth = twidth;
@@ -179,7 +163,7 @@ function draw_container(container, cx, cy){
 		if (wrapped) surface_reset_t();
 	}
 	
-	if (container.display = display.flex){
+	if (container.display == display.flex){
 		container.width = container.twidth;	
 		container.height = container.theight;	
 	}

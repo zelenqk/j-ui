@@ -48,7 +48,7 @@ var mark = {
 	"marginTop": 2
 }
 
-container.content = copy_styles_array(mark, 30);
+container.content = copy_styles_array(mark, 3);
 
 main.content = copy_styles_array(container, 10);
 
@@ -58,6 +58,9 @@ textTest = {
 	"height": 24,
 	"text": "Hello world",
 	"textFit": true,
+	"display": display.flex,
 	"newLine": true,
+	"padding": 6,
+	"borderRadius": 32,
 	"textColor": c_red,
 }

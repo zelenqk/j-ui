@@ -29,12 +29,13 @@ function draw_string(container, cx, cy) {
 		width = container.width;
 	}
 
-	// Align text within container
-	var tx = cx + align(container.alignItems, container.width, width);
-	var ty = cy + justify(container.justifyContent, container.height, height);
-	
 	// Draw the text
-	draw_text_ext_transformed(tx, ty, container.text, scale, container.width, scale, scale, 0);
+	draw_text_ext_transformed(cx, cy, container.text, height, width, scale, scale, 0);
+	
+	if (container.display == display.flex){
+		container.twidth = max(container.twidth, width);
+		container.theight = max(container.theight, height);
+	}
 	
 	// Restore drawing state
 	draw_set_color(bColor);

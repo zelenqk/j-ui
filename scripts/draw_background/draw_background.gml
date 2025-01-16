@@ -105,7 +105,7 @@ function draw_background(container, cx, cy, upperSurface){
 	
 	if !(container.paddingLeft == 0 and container.paddingRight == 0 and container.paddingTop == 0 and container.paddingBottom == 0){
 		gpu_set_blendmode_ext(bm_zero, bm_src_alpha);
-		draw_sprite(container.borderCookie, 0, 0, 0);
+		draw_sprite_stretched(container.borderCookie, 0, 0, 0, container.width + container.paddingLeft + container.paddingRight, container.height + container.paddingTop + container.paddingBottom);
 		gpu_set_blendmode(bm_normal);
 	}
 	
