@@ -15,8 +15,8 @@ function draw_container(container, cx, cy){
 	var overflowHidden = (container.parent.overflow == hidden);
 	var wrapped = container.wrapped;
 	
-	var x1 = container.tx - container.paddingLeft;
-	var y1 = container.ty - container.paddingTop;
+	var x1 = container.tx - container.paddingLeft * !wrapped;
+	var y1 = container.ty - container.paddingTop * !wrapped;
 	
 	var x2 = x1 + container.width + container.paddingLeft + container.paddingRight;
 	var y2 = y1 + container.height + container.paddingTop + container.paddingBottom;
@@ -53,6 +53,9 @@ function draw_container(container, cx, cy){
 	
 	cx += container.paddingLeft;
 	cy += container.paddingTop;
+	
+	container.tx += container.paddingLeft;
+	container.ty += container.paddingTop;
 	
 	if (!overflowHidden and !wrapped){
 		container.bounds = {

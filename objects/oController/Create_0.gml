@@ -26,6 +26,7 @@ var container = {
 	"direction": dir.box,
 	"overflow": hidden,
 	"marginBottom": 2,
+	"padding": 3,
 	"borderRadius": 12,
 	"step": function(){
 		contentOffsetX += keyboard_check(ord("D")) - keyboard_check(ord("A"));
