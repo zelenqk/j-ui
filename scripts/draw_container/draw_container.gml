@@ -26,7 +26,7 @@ function draw_container(container, cx, cy){
 	var x2 = x1 + container.width + container.paddingLeft + container.paddingRight;
 	var y2 = y1 + container.height + container.paddingTop + container.paddingBottom;
 	
-	if (overflowHidden){
+	if (overflowHidden and container.position != position.absolute){
 		x1 = max(x1, container.parent.tx);	
 		y1 = max(y1, container.parent.ty);
 		
@@ -34,7 +34,7 @@ function draw_container(container, cx, cy){
 		y2 = min(y2, container.parent.ty + container.parent.height);
 	}
 	
-	if (wrapped){
+	if (wrapped and container.position != position.absolute){
 		x1 = max(x1, container.bounds.x1);	
 		y1 = max(y1, container.bounds.y1);
 		
