@@ -22,6 +22,12 @@ enum display{
 	flex
 }
 
+//position
+enum position{
+	relative,
+	absolute,
+}
+
 //direction
 enum dir{
 	row,
@@ -43,6 +49,7 @@ baseContainer = {
 	"offsetY": 0,
 	"contentOffsetX": 0,
 	"contentOffsetY": 0,
+	"position": position.relative,
 	
 	//background
 	"backgroundPattern": pattern.repetition,

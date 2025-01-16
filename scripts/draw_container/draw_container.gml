@@ -8,7 +8,12 @@ function draw_container(container, cx, cy){
 	var bFont = draw_get_font();
 	
 	cx += (container.marginLeft + container.offsetX);
-	cx += (container.marginLeft + container.offsetX);
+	cy += (container.marginTop + container.offsetY);
+	
+	if (container.position == position.absolute){
+		container.tx = container.parent.tx + (container.marginLeft + container.offsetX);	
+		container.ty = container.parent.ty + (container.marginTop + container.offsetY);	
+	}
 	
 	//prepare bools
 	var upperSurface = surface_get_target();
@@ -153,7 +158,7 @@ function draw_container(container, cx, cy){
 	
 	surface_reset_t();
 	
-	if (wrapped) {
+	if (wrapped and container.position != position.absolute) {
 		upperSurface = surface_target(upperSurface);
 	}
 	
@@ -166,7 +171,11 @@ function draw_container(container, cx, cy){
 			gpu_set_blendmode(bm_normal);
 		}
 		
-		if (wrapped) surface_reset_t();
+		if (wrapped and container.position != position.absolute) surface_reset_t();
+	}
+	
+	if (wrapped){
+		upperSurface = surface_target(upperSurface);
 	}
 	
 	if (container.display == display.flex){
@@ -185,7 +194,8 @@ function draw_container(container, cx, cy){
 	draw_set_alpha(bAlpha);
 	draw_set_font(bFont);
 	
-	return {"w": container.width + container.marginLeft + container.marginRight + container.paddingLeft + container.paddingRight, "h": container.height + container.marginTop + container.marginBottom + container.paddingTop + container.paddingBottom}
+	if (container.position == position.relative) return {"w": container.width + container.marginLeft + container.marginRight + container.paddingLeft + container.paddingRight, "h": container.height + container.marginTop + container.marginBottom + container.paddingTop + container.paddingBottom}
+	else return {"w": 0, "h": 0}
 }
 
 function execute_script(container, name){
